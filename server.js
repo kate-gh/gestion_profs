@@ -85,53 +85,6 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Modification de la route de login
-/*app.post("/api/login", async (req, res) => {
-  const { email, password, userType } = req.body;
-
-  try {
-    let table, redirect, role;
-    if (userType === "admin") {
-      table = "admins";
-      redirect = "/dashboard";
-      role = "admin";
-    } else {
-      table = "professeurs";
-      redirect = "/profile";
-      role = "professeur";
-    }
-
-    const [user] = await pool.query(`SELECT * FROM ${table} WHERE email = ?`, [
-      email,
-    ]);
-
-    if (!user[0]) {
-      return res.status(401).json({ error: "Identifiants invalides" });
-    }
-
-    // Vérification du mot de passe haché
-    const isMatch = await bcrypt.compare(password, user[0].password);
-    if (!isMatch) {
-      return res.status(401).json({ error: "Identifiants invalides" });
-    }
-
-    const token = jwt.sign(
-      {
-        id: user[0].id,
-        role: role,
-        ...(role === "professeur" && { professorId: user[0].id }),
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.json({ token, redirect });
-  } catch (err) {
-    console.error("Erreur de connexion :", err);
-    res.status(500).send("Erreur interne du serveur");
-  }
-});*/
-
 app.post("/api/login", async (req, res) => {
   const { email, password, userType } = req.body;
 
