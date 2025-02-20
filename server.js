@@ -201,11 +201,14 @@ app.get("/api/professeurs/me", authenticate, async (req, res) => {
 app.put(
   "/api/professeurs/me",
   authenticate,
-  upload.single("photo"),
+  upload.single("newPhoto"),
   async (req, res) => {
     try {
       const { body } = req;
-      const photo = req.file ? req.file.filename : null;
+      const newPhoto = req.file;
+
+      const photoToUse = newPhoto ? newPhoto.filename : body.photo; // Photo existante du formulaire
+
       let matieres = Array.isArray(body.matieres)
         ? body.matieres
         : body.matieres.split(",").map((m) => m.trim());
@@ -216,7 +219,7 @@ app.put(
       );
 
       // Supprimer l'ancienne photo si elle existe
-      if (oldProf.photo && photo) {
+      if (newPhoto && oldProf.photo) {
         const oldPhotoPath = path.join(uploadsDir, oldProf.photo);
         if (fs.existsSync(oldPhotoPath)) {
           fs.unlinkSync(oldPhotoPath);
@@ -227,7 +230,7 @@ app.put(
         {
           ...body,
           matieres: JSON.stringify(matieres),
-          photo: req.file?.filename || body.photo,
+          photo: photoToUse,
         },
         req.user.id,
       ]);
